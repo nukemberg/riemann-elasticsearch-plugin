@@ -1,0 +1,4 @@
+{
+	:require riemann-elasticsearch-output.core
+	:plugin "elasticsearch"
+}
