@@ -11,15 +11,22 @@
 (def logstash-index-time-format (tf/formatter "yyyy.MM.dd"))
 
 (defn logstash-time-index
-	([event] (logstash-time-index "logstash-" event))
-	([prefix event]
-           (let [time (tc/from-long (long (* (:time event) 1000)))
-                 time-str (tf/unparse logstash-index-time-format time)]
-             (str prefix time-str))))
+  "Return a time based index name with optional prefix. Default prefix is 'logstash-'. E.g.:
+
+(logstash-time-index {:time 1423006857023 :host \"localhost\" :service \"app-health\" :metric 23}) ==> \"logstash-2015.02.03\"
+(logstash-time-index \"riemann_\" {:time 1423006857023 :host \"localhost\" :service \"app-health\" :metric 23}) ==> \"riemann_2015.02.03\"
+"
+  ([event] (logstash-time-index "logstash-" event))
+  ([prefix event]
+     (let [time (tc/from-long (long (* (:time event) 1000)))
+           time-str (tf/unparse logstash-index-time-format time)]
+       (str prefix time-str))))
 
 (def iso8601 (tf/formatters :date-time))
 
-(defn logstash-v1-format [event]
+(defn logstash-v1-format
+  "Convert an event to a Logstash V1 format compatible document"
+  [event]
   (merge (dissoc event :time :attributes)
          (:attributes event)
          {"@timestamp" (tf/unparse iso8601 (tc/from-long (long (* (:time event) 1000))))
@@ -29,11 +36,18 @@
 (defn- bulk-msg [idx-fn type-fn fmt-fn doc]
   (merge (fmt-fn doc) {:_index (idx-fn doc) :_type (type-fn doc)}))
 
-(defn elasticsearch-sync [{:keys [url opts index-fn type-fn format-fn es-opts]
+(defn elasticsearch-sync
+  "Create a new syncronouos Elasticsearch output stream.
+
+:type-fn - a function which extracts document type from event
+:index-fn - a function which returns index name from event
+:format-fn - a function which converts an event to document to be indexed. A document is map object."
+  [{:keys [url opts index-fn type-fn format-fn es-opts]
                            :or {type-fn #(str (:host %) "-" (:service %)) index-fn logstash-time-index format-fn logstash-v1-format}}]
-  {:pre [(not (nil? url))
+    {:pre [(not (nil? url))
          (every? ifn? '(index-fn format-fn type-fn))]}
-  (let [es (esr/connect url es-opts)
+
+    (let [es (esr/connect url es-opts)
         doc-fn (partial bulk-msg index-fn type-fn format-fn)
         ]
     (info "Created Elasticsearch connection object")
