@@ -41,8 +41,11 @@
 
 :type-fn - a function which extracts document type from event
 :index-fn - a function which returns index name from event
-:format-fn - a function which converts an event to document to be indexed. A document is map object."
-  [{:keys [url opts index-fn type-fn format-fn es-opts]
+:format-fn - a function which converts an event to document to be indexed. A document is map object.
+:url - The ElasticSearch REST API URL
+:es-opts - ElasticSearch connection options. Refer to http://reference.clojureelasticsearch.info/clojurewerkz.elastisch.rest.html#var-connect for more info
+"
+  [{:keys [url index-fn type-fn format-fn es-opts]
                            :or {type-fn #(str (:host %) "-" (:service %)) index-fn logstash-time-index format-fn logstash-v1-format}}]
     {:pre [(not (nil? url))
          (every? ifn? '(index-fn format-fn type-fn))]}
