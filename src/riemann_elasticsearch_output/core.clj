@@ -1,6 +1,7 @@
 (ns riemann-elasticsearch-output.core
 	(:require [clojurewerkz.elastisch.rest :as esr]
-		[clojurewerkz.elastisch.rest.bulk :as esrb]
+                  [clojurewerkz.elastisch.rest.bulk :as esrb]
+                  [riemann.common :refer [unix-to-iso8601]]
 		[clj-time.core :as t]
 		[clj-time.coerce :as tc]
 		[clj-time.format :as tf]
@@ -22,14 +23,12 @@
            time-str (tf/unparse logstash-index-time-format time)]
        (str prefix time-str))))
 
-(def iso8601 (tf/formatters :date-time))
-
 (defn logstash-v1-format
   "Convert an event to a Logstash V1 format compatible document"
   [event]
   (merge (dissoc event :time :attributes)
          (:attributes event)
-         {"@timestamp" (tf/unparse iso8601 (tc/from-long (long (* (:time event) 1000))))
+         {"@timestamp" (unix-to-iso8601 (:time event))
           "@version" "1"
           }))
 
