@@ -13,10 +13,9 @@ env:
 
 after_script: |
   if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then
+    git clone --branch=gh-pages "https://${GH_TOKEN}@${GH_REF}" doc
     lein doc
-    git fetch origin gh-pages 
-    git checkout -b gh-pages origin/gh-pages
-    cp -a doc/* ./
+    cd doc
     git add -u
     git config user.name "Travis Builder"
     git config user.email "builder@travis.com"
