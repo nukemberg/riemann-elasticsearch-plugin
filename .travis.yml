@@ -19,6 +19,8 @@ after_script: |
     git add -u
     git config user.name "Travis Builder"
     git config user.email "builder@travis.com"
-    git diff-index HEAD && git commit -m "Automatic doc build #{TRAVIS_BUILD_NUMBER}"
-    git push --force --quiet "https://${GH_TOKEN}@${GH_REF}" gh-pages
+    if git diff-index HEAD; then
+      git commit -m "Automatic doc build #{TRAVIS_BUILD_NUMBER}"
+      git push --force --quiet "https://${GH_TOKEN}@${GH_REF}" gh-pages
+    fi
   fi
