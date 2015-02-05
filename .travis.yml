@@ -2,4 +2,21 @@ language: clojure
 lein: lein2
 script: lein midje
 jdk:
-    - openjdk7
+  - openjdk7
+
+branches:
+  except:
+  - gh-pages
+env:
+  global:
+    GH_REF: github.com/avishai-ish-shalom/riemann-elasticsearch-plugin.git
+    GH_TOKEN:
+      secure: GyL1Dflv0ZjahkYTzdzx5A+nZ3h/Pgolu5jNrGTU8c42yusiVNTuH5N7hPHyPJaOs2h4QC5tmguBuau4DvKQ/GksNxT/uHAfVSBqAs3t433nFbEsVp+IcLMNXnGBkuctjeOR+XZXDZ9XdFTJb48L21m5B1ImUj7DpIDDpBPqG7Y=
+
+after_script:
+  - lein doc
+  - git checkout gh-pages
+  - cp -a doc/* ./
+  - git add -u
+  - git diff-index HEAD && git commit -m "Automatic doc build" --author="Travis Builder <builder@travis-ci.com>"
+  - git push --force --quiet "https://${GH_TOKEN}@${GH_REF}" gh-pages
