@@ -22,7 +22,10 @@ In your riemann.config
   (streams      
     (with {:type "riemann-event"}
       elasticsearch)))
+
 ```
+
+View the [API docs](https://avishai-ish-shalom.github.io/riemann-elasticsearch-plugin) for more info.
 
 ## Installing
 
