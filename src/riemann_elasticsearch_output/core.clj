@@ -61,5 +61,5 @@
           (esrb/bulk es
                      (esrb/bulk-index docs))
           (catch Exception e
-            (warn "Bulk index to Elasticsearch failed" e)
+            (warn e "Bulk index to Elasticsearch failed")
             (spy docs)))))))
