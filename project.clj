@@ -1,4 +1,4 @@
-(defproject riemann-elasticsearch-output "0.1.0-SNAPSHOT"
+(defproject riemann-elasticsearch-output "0.1.1-SNAPSHOT"
   :description "ElasticSearch output plugin for Riemann"
   :url "https://github.com/avishai-ish-shalom/riemann-elasticsearch-output"
   :license {:name "Apache v2"
