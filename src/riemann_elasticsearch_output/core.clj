@@ -112,7 +112,7 @@
             [docs bad-docs] (split-with valid-bulk-msg? docs)]
 
         ; cowardly refuse to index malformed docs
-        (when (empty? bad-docs)
+        (when-not (empty? bad-docs)
           (warnf "%d malformed messages recieved, skipping" (count bad-docs))
           (spy bad-docs))
 
