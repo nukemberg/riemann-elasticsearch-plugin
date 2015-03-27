@@ -8,7 +8,7 @@
   :plugins [[codox "0.6.1"]
             [lein-midje "3.1.3"]]
   :profiles {:dev {:dependencies [[clj-time "0.9.0"]
-                                  [riemann "0.2.8"]
+                                  [riemann "0.2.9"]
                                   [midje "1.6.3"]]}}
   :codox {:src-linenum-anchor-prefix "L"
           :src-dir-uri "https://github.com/avishai-ish-shalom/riemann-elasticsearch-plugin/blob/master"})
