@@ -15,8 +15,8 @@ In your riemann.config
 ; or
 (load-plugin "elasticsearch")
 
-(let [elasticsearch (batch 500 2
-                      (async-queue! :elasticsearch {:queue-size 1e3 :core-pool-size 4 :max-pool-size 4}
+(let [elasticsearch (async-queue! :elasticsearch {:queue-size 1e3 :core-pool-size 4 :max-pool-size 4}
+                      (batch 1000 5
                         (elasticsearch/elasticsearch-sync {:url "http://localhost:9200" :type-fn :type})))
       ]
   (streams      
