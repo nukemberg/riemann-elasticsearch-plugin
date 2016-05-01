@@ -43,8 +43,7 @@
     (esrb/bulk es (esrb/bulk-index docs))
     :ok
     (catch java.net.ConnectException e
-      (warn "Couldn't connect to ElasticSearch, retrying in 1 sec")
-      (Thread/sleep 1000)
+      (warn "Couldn't connect to ElasticSearch")
       :retry)
     (catch clojure.lang.ExceptionInfo e
       (case (get-in (ex-data e) [:object :status])
@@ -74,6 +73,7 @@
       (let [res (func)]
         (if (and (= :retry res) (> retries 0))
           (do
+            (warn "Sleeping" retry-interval "ms before retry")
             (sleep retry-interval)
             (recur (dec retries)))
           res)))))
@@ -121,4 +121,4 @@
           (case (retry retries retry-interval (partial index-bulk! es docs))
             :ok nil
             :error (warn "Indexing failed due to unretryable error")
-            nil (warn "Indexing failed after %d retries" retries)))))))
+            :retry (warn "Indexing failed after %d retries" retries)))))))
